@@ -6,6 +6,7 @@ class ProgressBar extends HTMLElement {
 
     connectedCallback() {
         this.render();
+        document.addEventListener("task-updated", () => this.render());
     }
 
     render() {
@@ -27,11 +28,10 @@ class ProgressBar extends HTMLElement {
             <div class="mt-3">
                 <p>Progreso: ${completadas}/${total} tareas completadas (${porcentaje}%)</p>
                 <div class="progress">
-                    <div class="progress-bar" role="progressbar" style="width: ${porcentaje}%;" 
-                        aria-valuenow="${porcentaje}" aria-valuemin="0" aria-valuemax="100"></div>
+                    <div class="progress-bar" style="width: ${porcentaje}%;"></div>
                 </div>
             </div>
-            `;
+        `;
     }
 }
 

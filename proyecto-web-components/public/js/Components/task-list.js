@@ -1,4 +1,4 @@
-class TaskForm extends HTMLElement {
+class TaskList extends HTMLElement {
     constructor() {
         super();
         this.attachShadow({ mode: "open" });
@@ -6,58 +6,59 @@ class TaskForm extends HTMLElement {
 
     connectedCallback() {
         this.render();
+        document.addEventListener("task-updated", () => this.render());
     }
 
     render() {
+        const usuarioActual = localStorage.getItem("usuarioActual");
+        const usuarios = JSON.parse(localStorage.getItem("usuarios")) || {};
+
+        if (!usuarioActual || !usuarios[usuarioActual]) {
+            this.shadowRoot.innerHTML = `<p class="text-muted">No hay usuario logueado.</p>`;
+            return;
+        }
+
+        const tareas = usuarios[usuarioActual].tareas || [];
+
         this.shadowRoot.innerHTML = `
         <link rel="stylesheet" href="./public/css/bootstrap.css">
-        <div class="card p-3 shadow-sm">
-            <h5 class="mb-3">Agregar tarea</h5>
-            <form id="taskForm">
-                <div class="mb-3">
-                    <label class="form-label">Título</label>
-                    <input type="text" id="title" class="form-control" required>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Descripción</label>
-                    <textarea id="description" class="form-control" rows="2"></textarea>
-                </div>
-                <button type="submit" class="btn btn-primary w-100">Agregar</button>
-            </form>
-        </div>
+        <h5>Tareas</h5>
+        <ul class="list-group">
+            ${tareas.map((task, i) => `
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                        <strong class="${task.completed ? 'text-decoration-line-through text-muted' : ''}">
+                            ${task.title}
+                        </strong><br>
+                        <small>${task.description}</small>
+                    </div>
+                    <div>
+                        <button class="btn btn-sm btn-success me-2" data-index="${i}" data-action="done">✔</button>
+                        <button class="btn btn-sm btn-danger" data-index="${i}" data-action="delete">✖</button>
+                    </div>
+                </li>
+            `).join('')}
+        </ul>
         `;
 
-        const form = this.shadowRoot.querySelector("#taskForm");
+        this.shadowRoot.querySelectorAll("button").forEach(btn => {
+            btn.addEventListener("click", (e) => {
+                const index = e.target.dataset.index;
+                const action = e.target.dataset.action;
 
-        form.addEventListener("submit", (e) => {
-            e.preventDefault();
+                if (action === "done") tareas[index].completed = !tareas[index].completed;
+                if (action === "delete") tareas.splice(index, 1);
 
-            const title = this.shadowRoot.querySelector("#title").value;
-            const description = this.shadowRoot.querySelector("#description").value;
+                usuarios[usuarioActual].tareas = tareas;
+                localStorage.setItem("usuarios", JSON.stringify(usuarios));
 
-            const usuarioActual = localStorage.getItem("usuarioActual");
-            let usuarios = JSON.parse(localStorage.getItem("usuarios")) || {};
+                // 🔥 Notificar cambios
+                document.dispatchEvent(new CustomEvent("task-updated"));
 
-            if (!usuarioActual || !usuarios[usuarioActual]) {
-                alert("Error: No hay un usuario activo.");
-                return;
-            }
-
-            const nuevaTarea = {
-                id: Date.now(),
-                title,
-                description,
-                completed: false,
-                fecha: new Date().toLocaleString()
-            };
-
-            usuarios[usuarioActual].tareas.push(nuevaTarea);
-            localStorage.setItem("usuarios", JSON.stringify(usuarios));
-
-            this.shadowRoot.querySelector("#taskForm").reset();
-            document.querySelector("task-list").render(); // refresca lista
+                this.render();
+            });
         });
     }
 }
 
-customElements.define("task-form", TaskForm);
+customElements.define("task-list", TaskList);

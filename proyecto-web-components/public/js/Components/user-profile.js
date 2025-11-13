@@ -25,7 +25,7 @@ class UserProfile extends HTMLElement {
 
         this.shadowRoot.querySelector("#logout").addEventListener("click", () => {
             localStorage.removeItem("usuarioActual");
-            window.location.href = "user-login.html";
+            window.location.href = "Index.html";
         });
     }
 }
