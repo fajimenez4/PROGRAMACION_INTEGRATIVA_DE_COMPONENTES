@@ -1,5 +1,7 @@
+// Crear el template que contendrá el HTML del componente
 const template = document.createElement("template");
 
+// HTML del componente (se inserta en el shadow DOM)
 template.innerHTML = `
 <link rel="stylesheet" href="./public/css/bootstrap.css">
 
@@ -22,25 +24,33 @@ template.innerHTML = `
 </div>
 `;
 
+// Definición del componente web personalizado
 export class TaskForm extends HTMLElement {
     constructor() {
         super();
+        // Crear shadow root y clonar el template dentro
         this.attachShadow({mode:"open"});
         this.shadowRoot.appendChild(template.content.cloneNode(true));
     }
 
+    // Cuando el componente se agrega al DOM
     connectedCallback() {
+        // Seleccionar el formulario dentro del shadow DOM
         const form = this.shadowRoot.querySelector("#taskForm");
 
+        // Escuchar el envío del formulario
         form.addEventListener("submit", (e) => {
-            e.preventDefault();
+            e.preventDefault(); // Evitar recarga de la página
 
+            // Obtener valores de los campos
             const title = this.shadowRoot.querySelector("#title").value.trim();
             const description = this.shadowRoot.querySelector("#description").value.trim();
 
+            // Obtener usuario actual y lista de usuarios desde localStorage
             const usuarioActual = localStorage.getItem("usuarioActual");
             let usuarios = JSON.parse(localStorage.getItem("usuarios"));
 
+            // Crear objeto de la nueva tarea
             const nuevaTarea = {
                 id: Date.now(),
                 title,
@@ -49,15 +59,19 @@ export class TaskForm extends HTMLElement {
                 fecha: new Date().toLocaleString()
             };
 
+            // Agregar la nueva tarea al usuario correspondiente
             usuarios[usuarioActual].tareas.push(nuevaTarea);
+            // Guardar cambios en localStorage
             localStorage.setItem("usuarios", JSON.stringify(usuarios));
 
+            // Limpiar el formulario
             form.reset();
 
-            // Actualizar otros componentes
+            // Notificar a otros componentes que las tareas se actualizaron
             document.dispatchEvent(new CustomEvent("task-updated"));
         });
     }
 }
 
+// Registrar el custom element en el navegador
 customElements.define("task-form", TaskForm);

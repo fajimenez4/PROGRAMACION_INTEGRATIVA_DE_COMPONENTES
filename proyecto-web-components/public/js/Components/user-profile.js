@@ -1,20 +1,29 @@
+// Crea un elemento <template> que se usa para clonar el HTML del componente
 const template = document.createElement("template");
 
+// Inserta el HTML y referencia a CSS dentro del template.
 template.innerHTML = `
-<link rel="stylesheet" href="./public/css/bootstrap.css">
+    <!-- Estilo bootstrap local (relativo al archivo) -->
+    <link rel="stylesheet" href="./public/css/bootstrap.css">
 
-<div class="card text-center shadow p-3">
-    <img id="foto" src="" 
-        class="rounded-circle mx-auto"
-        style="width:100px; height:100px; object-fit:cover;">
-    <h5 id="nombre" class="mt-3"></h5>
-    <p id="correo" class="text-muted"></p>
-    <button id="logout" class="btn btn-outline-danger btn-sm mt-2">
-        Cerrar sesión
-    </button>
-</div>
-`;
+    <!-- Estructura de la tarjeta de perfil -->
+    <div class="card text-center shadow p-3">
+        <!-- Foto del usuario: se rellena dinámicamente -->
+        <img id="foto" src="" 
+            class="rounded-circle mx-auto"
+            style="width:100px; height:100px; object-fit:cover;">
+        <!-- Nombre del usuario: se rellena dinámicamente -->
+        <h5 id="nombre" class="mt-3"></h5>
+        <!-- Correo del usuario: se rellena dinámicamente -->
+        <p id="correo" class="text-muted"></p>
+        <!-- Botón para cerrar sesión -->
+        <button id="logout" class="btn btn-outline-danger btn-sm mt-2">
+            Cerrar sesión
+        </button>
+    </div>
+    `;
 
+// Define y exporta la clase UserProfile
 export class UserProfile extends HTMLElement {
     constructor() {
         super();
@@ -38,4 +47,5 @@ export class UserProfile extends HTMLElement {
     }
 }
 
+// Registra el nuevo elemento personalizado con el tag <user-profile>
 customElements.define("user-profile", UserProfile);
