@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Tareas - Mazer Adaptado</title>
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="public/css/bootstrap.css">
+    <!-- Estilos propios -->
+    <link rel="stylesheet" href="public/css/app.css">
+    <!-- Iconos -->
+    <link rel="stylesheet" href="public/vendors/bootstrap-icons/bootstrap-icons.css">
+
+</head>
+
+<body>
+    <div class="container py-4">
+        <h2 class="text-center mb-4">Panel de Tareas</h2>
+
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <user-profile></user-profile>
+            </div>
+            <div class="col-md-8">
+                <task-form></task-form>
+            </div>
+        </div>
+
+        <progress-bar></progress-bar>
+
+        <hr>
+        <task-list></task-list>
+    </div>
+
+    <!-- Bootstrap -->
+    <script src="public/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Importación de componentes -->
+    <script src="public/js/Components/user-login.js"></script>
+    <script src="public/js/Components/user-profile.js"></script>
+    <script src="public/js/Components/task-list.js"></script>
+    <script src="public/js/Components/task-form.js"></script>
+    <script src="public/js/Components/progress-bar.js"></script>
+
+</body>
+
+</html>
